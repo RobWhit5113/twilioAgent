@@ -25,8 +25,17 @@ const deepgramClient = createClient(process.env.DEEPGRAM_API_KEY);
 let keepAlive;
 
 // OpenAI
-const OpenAI = require('openai');
-const openai = new OpenAI();
+// const OpenAI = require('openai');
+// const openai = new OpenAI({
+//   apiKey: "",   // Your Anthropic API key
+//   baseURL: "https://api.anthropic.com/v1/",  // Anthropic API endpoint
+// });
+
+//Anthropic 
+const Anthropic = require('@anthropic-ai/sdk');
+const anthropic = new Anthropic({
+  apiKey
+})
 
 // Deepgram Text to Speech Websocket
 const WebSocket = require('ws');
