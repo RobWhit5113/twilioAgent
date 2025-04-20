@@ -146,7 +146,7 @@ class MediaStream {
 */
 async function promptLLM(mediaStream, prompt) {
   const stream = openai.beta.chat.completions.stream({
-    model: 'gpt-3.5-turbo',
+    model: 'claude-3-7-sonnet-20250219',
     stream: true,
     messages: [
       {
@@ -280,7 +280,7 @@ const setupDeepgram = (mediaStream) => {
   if (keepAlive) clearInterval(keepAlive);
   keepAlive = setInterval(() => {
     deepgram.keepAlive(); // Keeps the connection alive
-  }, 10 * 1000);
+  }, 100000);
 
   deepgram.addListener(LiveTranscriptionEvents.Open, async () => {
     console.log("deepgram STT: Connected");
