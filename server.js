@@ -34,8 +34,8 @@ let keepAlive;
 //Anthropic 
 const Anthropic = require('@anthropic-ai/sdk');
 const anthropic = new Anthropic({
-  apiKey
-})
+  apiKey: process.env.ANTHROPIC_API_KEY
+});
 
 // Deepgram Text to Speech Websocket
 const WebSocket = require('ws');
@@ -154,14 +154,11 @@ class MediaStream {
   OpenAI Streaming LLM
 */
 async function promptLLM(mediaStream, prompt) {
-  const stream = openai.beta.chat.completions.stream({
+  const stream = await anthropic.messages.stream({
     model: 'claude-3-7-sonnet-20250219',
-    stream: true,
+    max_tokens: 1000,
+    system: "You are funny, everything is a joke to you.",
     messages: [
-      {
-        role: 'assistant',
-        content: `You are funny, everything is a joke to you.`
-      },
       {
         role: 'user',
         content: prompt
@@ -171,6 +168,7 @@ async function promptLLM(mediaStream, prompt) {
 
   speaking = true;
   let firstToken = true;
+
   for await (const chunk of stream) {
     if (speaking) {
       if (firstToken) {
@@ -181,7 +179,7 @@ async function promptLLM(mediaStream, prompt) {
         firstToken = false;
         firstByte = true;
       }
-      chunk_message = chunk.choices[0].delta.content;
+     const chunk_message = chunk.delta?.text || '';
       if (chunk_message) {
         process.stdout.write(chunk_message)
         if (!send_first_sentence_input_time && containsAnyChars(chunk_message)){
